@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <title>Gmail Stats</title>
     <link rel="stylesheet" href="styles.css" type="text/css">
+    <script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>
+    <script>
+      window.onLoadCallback = function(){
+      gapi.auth2.init({
+          client_id: '769177896397-edpv4hv24pa90g30q811vl62h2albhsa.apps.googleusercontent.com'
+        });
+      }
+    </script>
   </head>
   <body>
 
-    <form name="gmail-api" id="gmail-api" onsubmit="getRequest(e)">
+    <form name="gmail-api" id="gmail-api">
       <div class="input-area">
         <label for="user-id">UserID</label>
         <input type="text" id="user-id" name="user-id" placeholder="Enter UserID or type 'me' for current Google user" required>
@@ -21,9 +29,18 @@
 
     <script src="gmail_api.js"></script>
     <script>
+      document.getElementById("gmail-api").addEventListener("submit", function(e){
+          e.preventDefault();    //stop form from submitting
+          console.log("Hit 1");
+          let userId = document.getElementById("user-id");
+          //let gmailQuery = document.getElementByID("gmail-query");
+          let result = listLabels(userId);
+          console.log(result);
+      });
 
       function getRequest(e){
         e.preventDefault();
+        console.log("Hit 1");
         let userId = document.getElementByID("user-id");
         //let gmailQuery = document.getElementByID("gmail-query");
         let result = listLabels(userId);
