@@ -7,7 +7,7 @@
   </head>
   <body>
 
-    <form name="gmail-api" id="gmail-api" onsubmit="getRequest()">
+    <form name="gmail-api" id="gmail-api" onsubmit="getRequest(e)">
       <div class="input-area">
         <label for="user-id">UserID</label>
         <input type="text" id="user-id" name="user-id" placeholder="Enter UserID or type 'me' for current Google user" required>
@@ -22,7 +22,8 @@
     <script src="gmail_api.js"></script>
     <script>
 
-      function getRequest() = {
+      function getRequest(e){
+        e.preventDefault();
         let userId = document.getElementByID("user-id");
         //let gmailQuery = document.getElementByID("gmail-query");
         let result = listLabels(userId);
