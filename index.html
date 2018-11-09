@@ -11,11 +11,31 @@
       <!-- <button id="authorize_button" style="display: none;">Authorize</button> -->
       <button id="signout_button" class="visible-when-authorized" data-visible="block">Sign Out</button>
     </header>
-    <section id="report-content">
+    <section id="report-content" class="visibleWhenAuthorized group">
 
-      <div class="report-block">
-        <h4>Labels</h4>
-        <div id="labels"></div>
+      <div id="report-blocks">
+        <div class="report-block">
+          <h4>Labels</h4>
+          <div id="labels"></div>
+        </div>
+        <div class="report-block">
+          <h4>Date Range</h4><br>
+          <div id="dates">
+            <div class="input-area">
+              <label for="start-date">Start Date</label>
+              <input type="date" id="start-date" name="start-date">
+            </div>
+            <div class="input-area">
+              <label for="end-date">End Date</label>
+              <input type="date" id="end-date" name="end-date">
+            </div>
+          </div>
+        </div>
+        <span id="submit-query">Get Results</span>
+      </div>
+
+      <div id="report-results">
+
       </div>
 
     </section>

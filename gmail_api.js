@@ -11,6 +11,7 @@ var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
 
 var authorizeButton = document.getElementById('authorize_button');
 var signoutButton = document.getElementById('signout_button');
+var getResultsButtom = document.getElementById('submit-query');
 var visibleWhenAuthorized = document.getElementsByClassName("visible-when-authorized");
 
 /**
@@ -39,12 +40,14 @@ function initClient() {
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         //authorizeButton.onclick = handleAuthClick;
         signoutButton.onclick = handleSignoutClick;
+        getResultsButtom.onclick = handleGetResultsClick;
       });
     } else {
       // Handle the initial sign-in state.
       updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
       //authorizeButton.onclick = handleAuthClick;
       signoutButton.onclick = handleSignoutClick;
+      getResultsButtom.onclick = handleGetResultsClick;
     }
   });
 }
@@ -74,19 +77,24 @@ function showAuthorized() {
   }
 }
 
-/**
- *  Sign in the user upon button click.
- */
 function handleAuthClick(event) {
   gapi.auth2.getAuthInstance().signIn();
 }
 
-/**
- *  Sign out the user upon button click.
- */
 function handleSignoutClick(event) {
   gapi.auth2.getAuthInstance().signOut();
   window.location.href = "./"; //Redirect to same page
+}
+
+function handleGetResultsClick() {
+  var query = "";
+  var startDate = document.getElementById("start-date"),
+      endDate = document.getElementById("end-date");
+  if(startDate.value != "" && endDate.value != "") {
+    query += "after:"+startDate.value+" before:"+endDate.value;
+  }
+
+  listMessages(query,logResult);
 }
 
 function addLabel(labelContent) {
@@ -144,4 +152,85 @@ function listLabels() {
       addLabel('No Labels found.');
     }
   });
+}
+
+// function listMessages(query) {
+//   var messageResults = {};
+//   console.log("query: "+query);
+//   gapi.client.gmail.users.messages.list({
+//     'userId': 'me',
+//     'query': query
+//   }).then(function(response) {
+//     var messages = response.result.labels;
+//
+//     if (messages && messages.length > 0) {
+//       for (i = 0; i < messages.length; i++) {
+//         var message = messages[i];
+//         console.log("Message: "+message);
+//       }
+//     } else {
+//       console.log('No Messages found.');
+//     }
+//   });
+// }
+
+/**
+ * Retrieve Messages in user's mailbox matching query.
+ *
+ * @param  {String} userId User's email address. The special value 'me'
+ * can be used to indicate the authenticated user.
+ * @param  {String} query String used to filter the Messages listed.
+ * @param  {Function} callback Function to call when the request is complete.
+ */
+function listMessages(query, callback) {
+  var userId = "me";
+  var getPageOfMessages = function(request, result) {
+    request.execute(function(resp) {
+      result = result.concat(resp.messages);
+      var nextPageToken = resp.nextPageToken;
+      if (nextPageToken) {
+        request = gapi.client.gmail.users.messages.list({
+          'userId': userId,
+          'pageToken': nextPageToken,
+          'q': query
+        });
+        getPageOfMessages(request, result);
+      } else {
+        callback(result);
+      }
+    });
+  };
+  var initialRequest = gapi.client.gmail.users.messages.list({
+    'userId': userId,
+    'q': query
+  });
+  getPageOfMessages(initialRequest, []);
+}
+
+function logResult(result) {
+  for(var i = 0; i < result.length; i++){
+    console.log(result[i].id);
+    getMessage(result[i].id, logMessages);
+  }
+}
+
+function logMessages(message) {
+  console.log(message.labelIds);
+}
+
+/**
+ * Get Message with given ID.
+ *
+ * @param  {String} userId User's email address. The special value 'me'
+ * can be used to indicate the authenticated user.
+ * @param  {String} messageId ID of Message to get.
+ * @param  {Function} callback Function to call when the request is complete.
+ */
+function getMessage(messageId, callback) {
+  var request = gapi.client.gmail.users.messages.get({
+    'userId': "me",
+    'id': messageId,
+    'format': "minimal"
+  });
+  request.execute(callback);
 }
