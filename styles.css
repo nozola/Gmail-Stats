@@ -1,3 +1,20 @@
 .visible-when-authorized {
   display: none;
 }
+
+header,footer {
+  display: flex;
+  justify-content: center;
+}
+
+#labels label {
+  -webkit-font-smoothing: auto;
+  font-size: .75rem;
+  letter-spacing: .3px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 4px;
+}

@@ -6,40 +6,26 @@
     <link rel="stylesheet" href="styles.css" type="text/css">
   </head>
   <body>
+    <header>
+      <!--Add buttons to initiate auth sequence and sign out-->
+      <!-- <button id="authorize_button" style="display: none;">Authorize</button> -->
+      <button id="signout_button" class="visible-when-authorized" data-visible="block">Sign Out</button>
+    </header>
+    <section id="report-content">
 
-    <form name="gmail-api" id="gmail-api" class="visible-when-authorized" data-visible="block">
-      <div class="input-area">
-        <label for="user-id">UserID</label>
-        <input type="text" id="user-id" name="user-id" placeholder="Enter UserID or type 'me' for current Google user" required>
+      <div>
+        <h4>Labels</h4>
+        <div id="labels"></div>
       </div>
-      <!-- <div class="input-area">
-        <label for="gmail-query">Query</label>
-        <input type="text" id="gmail-query" name="gmail-query" placeholder="Enter query to filter results">
-      </div> -->
-      <input type="submit" value="Get Data">
-    </form>
 
-    <!--Add buttons to initiate auth sequence and sign out-->
-    <button id="authorize_button" style="display: none;">Authorize</button>
-    <button id="signout_button" class="visible-when-authorized" data-visible="block">Sign Out</button>
-
-    <pre id="content"></pre>
-
+    </section>
+    <footer>
+      <a href="https://github.com/nozola/Gmail-Stats" rel="noopener">View on GitHub</a>
+    </footer>
     <script src="gmail_api.js"></script>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
-    <script>
-      document.getElementById("gmail-api").addEventListener("submit", function(e){
-          e.preventDefault();    //stop form from submitting
-          console.log("Hit 1");
-          let userId = document.getElementById("user-id");
-          //let gmailQuery = document.getElementByID("gmail-query");
-          let result = listLabels(userId);
-          console.log(result);
-      });
-
     </script>
   </body>
 </html>

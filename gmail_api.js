@@ -33,11 +33,19 @@ function initClient() {
   }).then(function () {
     // Listen for sign-in state changes.
     gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
-    // Handle the initial sign-in state.
-    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-    authorizeButton.onclick = handleAuthClick;
-    signoutButton.onclick = handleSignoutClick;
+    if(!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+      gapi.auth2.getAuthInstance().signIn().then(function() { // Initiate Authorization on load
+        // Handle the initial sign-in state.
+        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        //authorizeButton.onclick = handleAuthClick;
+        signoutButton.onclick = handleSignoutClick;
+      });
+    } else {
+      // Handle the initial sign-in state.
+      updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      //authorizeButton.onclick = handleAuthClick;
+      signoutButton.onclick = handleSignoutClick;
+    }
   });
 }
 
@@ -47,12 +55,12 @@ function initClient() {
  */
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
-    authorizeButton.style.display = 'none';
+    //authorizeButton.style.display = 'none';
     //signoutButton.style.display = 'block';
     showAuthorized();
     listLabels();
   } else {
-    authorizeButton.style.display = 'block';
+    //authorizeButton.style.display = 'block';
     //signoutButton.style.display = 'none';
     for(var i = 0; i < visibleWhenAuthorized.length; i++){
         visibleWhenAuthorized[i].style.display = "none";
@@ -78,23 +86,41 @@ function handleAuthClick(event) {
  */
 function handleSignoutClick(event) {
   gapi.auth2.getAuthInstance().signOut();
+  window.location.href = "./"; //Redirect to same page
 }
 
-/**
- * Append a pre element to the body containing the given message
- * as its text node. Used to display the results of the API call.
- *
- * @param {string} message Text to be placed in pre element.
- */
-function appendPre(message) {
-  var pre = document.getElementById('content');
-  var textContent = document.createTextNode(message + '\n');
-  pre.appendChild(textContent);
+function addLabel(labelContent) {
+  var labels = document.getElementById('labels');
+  var inputDiv = document.createElement('div');
+  inputDiv.classList.add("input-area");
+  labels.appendChild(inputDiv);
+  var checkbox = document.createElement('input');
+  checkbox.type = "checkbox";
+  checkbox.name = "label_"+labelContent.id;
+  checkbox.value = labelContent.id;
+  checkbox.id = "label_"+labelContent.id;
+
+  var label = document.createElement('label');
+  var labelText = document.createTextNode(labelContent.name);
+  // Set Default Colors
+  if(!labelContent.hasOwnProperty('color')) {
+    labelContent.color = {
+      'textColor': 'black',
+      'backgroundColor': '#DDD'
+    }
+  }
+  label.htmlFor = "label_"+labelContent.id;
+  label.appendChild(labelText);
+  label.style.color = labelContent.color.textColor;
+  label.style.backgroundColor = labelContent.color.backgroundColor;
+
+  inputDiv.appendChild(checkbox);
+  inputDiv.appendChild(label);
 }
 
 function clearLabels() {
-  var content = document.getElementById('content');
-  content.innerHTML = "";
+  var labels = document.getElementById('labels');
+  labels.innerHTML = "";
 }
 
 /**
@@ -107,15 +133,15 @@ function listLabels() {
   }).then(function(response) {
     clearLabels();
     var labels = response.result.labels;
-    appendPre('Labels:');
+    //appendPre('Labels:');
 
     if (labels && labels.length > 0) {
       for (i = 0; i < labels.length; i++) {
         var label = labels[i];
-        appendPre(label.name)
+        addLabel(label);
       }
     } else {
-      appendPre('No Labels found.');
+      addLabel('No Labels found.');
     }
   });
 }
