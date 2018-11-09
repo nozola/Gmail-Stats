@@ -7,6 +7,15 @@ header,footer {
   justify-content: center;
 }
 
+.report-block {
+  display: inline-block;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+  border-radius: 10px;
+}
+
+#labels {
+  max-height: 200px
+}
 #labels label {
   -webkit-font-smoothing: auto;
   font-size: .75rem;
