@@ -11,7 +11,7 @@ var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
 
 var authorizeButton = document.getElementById('authorize_button');
 var signoutButton = document.getElementById('signout_button');
-var visibleWhenAuthorized = document.getElementsByClassName("visible-when-authoized");
+var visibleWhenAuthorized = document.getElementsByClassName("visible-when-authorized");
 
 /**
  *  On load, called to load the auth2 library and API client library.
@@ -49,9 +49,7 @@ function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
     authorizeButton.style.display = 'none';
     //signoutButton.style.display = 'block';
-    for(var i = 0; i < visibleWhenAuthorized.length; i++){
-        visibleWhenAuthorized[i].style.display = visibleWhenAuthorized[i].dataset.visible;
-    }
+    showAuthorized();
     listLabels();
   } else {
     authorizeButton.style.display = 'block';
@@ -59,6 +57,12 @@ function updateSigninStatus(isSignedIn) {
     for(var i = 0; i < visibleWhenAuthorized.length; i++){
         visibleWhenAuthorized[i].style.display = "none";
     }
+  }
+}
+
+function showAuthorized() {
+  for(var i = 0; i < visibleWhenAuthorized.length; i++){
+      visibleWhenAuthorized[i].style.display = visibleWhenAuthorized[i].dataset.visible;
   }
 }
 
@@ -88,6 +92,11 @@ function appendPre(message) {
   pre.appendChild(textContent);
 }
 
+function clearLabels() {
+  var content = document.getElementById('content');
+  content.innerHTML = "";
+}
+
 /**
  * Print all Labels in the authorized user's inbox. If no labels
  * are found an appropriate message is printed.
@@ -96,6 +105,7 @@ function listLabels() {
   gapi.client.gmail.users.labels.list({
     'userId': 'me'
   }).then(function(response) {
+    clearLabels();
     var labels = response.result.labels;
     appendPre('Labels:');
 
