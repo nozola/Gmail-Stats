@@ -14,6 +14,13 @@ var signoutButton = document.getElementById('signout_button');
 var getResultsButtom = document.getElementById('submit-query');
 var visibleWhenAuthorized = document.getElementsByClassName("visible-when-authorized");
 
+var checkedLabels = []; // Setting variable for checked labels here to be accessible globally
+var mailData = {}; // This will hold all of the data to be displayed in the report
+
+// TEST VARIABLE
+
+var testVAR;
+
 /**
  *  On load, called to load the auth2 library and API client library.
  */
@@ -87,13 +94,44 @@ function handleSignoutClick(event) {
 }
 
 function handleGetResultsClick() {
+  mailData = {}; // Reset the report data
+  checkedLabels = []; // Reset the checkedLabels
+
   var query = "";
+  var labelIDs = [];
   var startDate = document.getElementById("start-date"),
       endDate = document.getElementById("end-date");
   if(startDate.value != "" && endDate.value != "") {
     query += "after:"+startDate.value+" before:"+endDate.value;
   }
 
+  function getCheckedBoxes(chkboxName) {
+    var checkboxes = document.getElementsByName(chkboxName);
+    var checkboxesChecked = [];
+    // loop over them all
+    for (var i=0; i<checkboxes.length; i++) {
+       // And stick the checked ones onto an array...
+       if (checkboxes[i].checked) {
+          checkboxesChecked.push(checkboxes[i].value);
+       }
+    }
+    // Return the array if it is non-empty, or null
+    return checkboxesChecked.length > 0 ? checkboxesChecked : null;
+  }
+  checkedLabels = getCheckedBoxes("checkbox_labels");
+  console.log("Checked Labels: "+labelIDs);
+
+  if (labelIDs.length > 0) {
+    query += " AND ";
+    for (var ii = 0; ii < labelIDs.length; ii++) {
+      query += "label:"+labelIDs[ii];
+      if ( ii < (labelIDs.length - 1) ) {
+        query += " OR ";
+      }
+    }
+  }
+
+  console.log("Query: "+query);
   listMessages(query,logResult);
 }
 
@@ -104,7 +142,7 @@ function addLabel(labelContent) {
   labels.appendChild(inputDiv);
   var checkbox = document.createElement('input');
   checkbox.type = "checkbox";
-  checkbox.name = "label_"+labelContent.id;
+  checkbox.name = "checkbox_labels";
   checkbox.value = labelContent.id;
   checkbox.id = "label_"+labelContent.id;
 
@@ -146,33 +184,16 @@ function listLabels() {
     if (labels && labels.length > 0) {
       for (i = 0; i < labels.length; i++) {
         var label = labels[i];
-        addLabel(label);
+        if (label.type == "user") {
+          console.log("Label: "+label.id+" - Type: "+label.type);
+          addLabel(label);
+        }
       }
     } else {
       addLabel('No Labels found.');
     }
   });
 }
-
-// function listMessages(query) {
-//   var messageResults = {};
-//   console.log("query: "+query);
-//   gapi.client.gmail.users.messages.list({
-//     'userId': 'me',
-//     'query': query
-//   }).then(function(response) {
-//     var messages = response.result.labels;
-//
-//     if (messages && messages.length > 0) {
-//       for (i = 0; i < messages.length; i++) {
-//         var message = messages[i];
-//         console.log("Message: "+message);
-//       }
-//     } else {
-//       console.log('No Messages found.');
-//     }
-//   });
-// }
 
 /**
  * Retrieve Messages in user's mailbox matching query.
@@ -196,7 +217,11 @@ function listMessages(query, callback) {
         });
         getPageOfMessages(request, result);
       } else {
-        callback(result);
+        if (result == "" || result.length == 0){
+          console.log("No Results...");
+        } else {
+          callback(result);
+        }
       }
     });
   };
@@ -208,14 +233,55 @@ function listMessages(query, callback) {
 }
 
 function logResult(result) {
-  for(var i = 0; i < result.length; i++){
-    console.log(result[i].id);
-    getMessage(result[i].id, logMessages);
+  if (result.length > 0) {
+    var batchMessages = gapi.client.newBatch();
+    var messageRequester = function(messageId) {
+      return gapi.client.gmail.users.messages.get({
+        'userId': "me",
+        'id': messageId,
+        'format': "minimal"
+      });
+    };
+    for (var i = 0; i < result.length; i++) {
+      if(result[i].hasOwnProperty("id")){
+        var messageRequest = messageRequester(result[i].id);
+        batchMessages.add(messageRequest);
+        //getMessage(result[i].id, logMessages);
+      }
+    }
+    batchMessages.then(function(response){
+      //Success
+      console.log("Success: ");
+      console.log(response);
+      testVAR = response;
+      for (messageID in response.result) {
+        var message = response.result[messageID].result;
+        console.log(message);
+        if(message.hasOwnProperty("labelIds")){
+          logMessages(message);
+        }
+      }
+    },function(reason){
+      //Error
+      console.log("Error: "+reason);
+    });
+  } else {
+    console.log("No messages found...");
   }
 }
 
 function logMessages(message) {
-  console.log(message.labelIds);
+  var labelIDs = message.labelIds;
+  console.log("Labels: "+labelIDs);
+  for (var i = 0; i < labelIDs.length; i++) {
+    if( checkedLabels == null || checkedLabels.includes(labelIDs[i]) ) { // Filter out labels that aren't checked
+      if (mailData.hasOwnProperty(labelIDs[i])) {
+        mailData[labelIDs[i]]++;
+      } else {
+        mailData[labelIDs[i]] = 1;
+      }
+    }
+  }
 }
 
 /**
