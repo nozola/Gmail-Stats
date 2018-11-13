@@ -36,16 +36,20 @@
 
       <div id="report-results">
 
+        <canvas id="chart-area" class="chart"></canvas>
+
       </div>
 
     </section>
     <footer>
       <a href="https://github.com/nozola/Gmail-Stats" rel="noopener">View on GitHub</a>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
     <script src="gmail_api.js"></script>
     <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
+    <!-- <script src="reporting.js"></script> -->
   </body>
 </html>

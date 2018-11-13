@@ -17,9 +17,7 @@ var visibleWhenAuthorized = document.getElementsByClassName("visible-when-author
 var checkedLabels = []; // Setting variable for checked labels here to be accessible globally
 var mailData = {}; // This will hold all of the data to be displayed in the report
 
-// TEST VARIABLE
-
-var testVAR;
+var ctx = document.getElementById('chart-area').getContext('2d');
 
 /**
  *  On load, called to load the auth2 library and API client library.
@@ -185,7 +183,6 @@ function listLabels() {
       for (i = 0; i < labels.length; i++) {
         var label = labels[i];
         if (label.type == "user") {
-          console.log("Label: "+label.id+" - Type: "+label.type);
           addLabel(label);
         }
       }
@@ -251,16 +248,17 @@ function logResult(result) {
     }
     batchMessages.then(function(response){
       //Success
-      console.log("Success: ");
-      console.log(response);
-      testVAR = response;
+      // console.log("Success: ");
+      // console.log(response);
       for (messageID in response.result) {
         var message = response.result[messageID].result;
-        console.log(message);
+        //console.log(message);
         if(message.hasOwnProperty("labelIds")){
           logMessages(message);
         }
       }
+      createReportChart();
+
     },function(reason){
       //Error
       console.log("Error: "+reason);
@@ -272,7 +270,7 @@ function logResult(result) {
 
 function logMessages(message) {
   var labelIDs = message.labelIds;
-  console.log("Labels: "+labelIDs);
+  //console.log("Labels: "+labelIDs);
   for (var i = 0; i < labelIDs.length; i++) {
     if( checkedLabels == null || checkedLabels.includes(labelIDs[i]) ) { // Filter out labels that aren't checked
       if (mailData.hasOwnProperty(labelIDs[i])) {
@@ -282,6 +280,33 @@ function logMessages(message) {
       }
     }
   }
+}
+
+function createReportChart(){
+  // Create data structure
+  reportData = {
+    datasets: [{
+      data: [],
+      label: 'Labels'
+    }],
+    labels: []
+  };
+  // Add data to data structure
+  for (key in mailData) {
+    console.log("key: "+key);
+    console.log("value: "+mailData[key]);
+    reportData.datasets[0].data.push(mailData[key]);
+    reportData.labels.push(key);
+  }
+  console.log(reportData);
+
+  var myPieChart = new Chart(ctx,{
+    type: 'pie',
+    data: reportData,
+    options: {
+  		responsive: true
+  	}
+  });
 }
 
 /**
