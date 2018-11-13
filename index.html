@@ -6,44 +6,59 @@
     <link rel="stylesheet" href="styles.css" type="text/css">
   </head>
   <body>
-    <header>
-      <!--Add buttons to initiate auth sequence and sign out-->
-      <!-- <button id="authorize_button" style="display: none;">Authorize</button> -->
-      <button id="signout_button" class="visible-when-authorized" data-visible="block">Sign Out</button>
-    </header>
-    <section id="report-content" class="visibleWhenAuthorized group">
+    <section id="container">
+      <section id="body-content" class="visible-when-authorized group" data-visible="flex">
+        <header>
+          <!--Add buttons to initiate auth sequence and sign out-->
+          <!-- <button id="authorize_button" style="display: none;">Authorize</button> -->
+          <span id="signout-button">Sign Out</span>
+          <span id="submit-query">Get Results</span>
+        </header>
 
-      <div id="report-blocks">
-        <div class="report-block">
-          <h4>Labels</h4>
-          <div id="labels"></div>
-        </div>
-        <div class="report-block">
-          <h4>Date Range</h4><br>
-          <div id="dates">
-            <div class="input-area">
-              <label for="start-date">Start Date</label>
-              <input type="date" id="start-date" name="start-date">
+        <div id="report-blocks">
+
+          <div class="report-block">
+            <h4>Labels</h4>
+            <div id="labels"></div>
+          </div>
+
+          <div class="report-block">
+            <h4>Date Range</h4><br>
+            <div id="dates">
+              <div class="input-area">
+                <label for="start-date">Start Date</label>
+                <input type="date" id="start-date" name="start-date">
+              </div>
+              <div class="input-area">
+                <label for="end-date">End Date</label>
+                <input type="date" id="end-date" name="end-date">
+              </div>
             </div>
-            <div class="input-area">
-              <label for="end-date">End Date</label>
-              <input type="date" id="end-date" name="end-date">
+          </div>
+
+          <div class="report-block">
+            <h4>Sent To/From</h4><br>
+            <div id="sent-to-from">
+              <div class="input-area">
+                <label for="sent-to">To</label>
+                <input type="email" id="sent-to" name="sent-to" placeholder="Enter Email...">
+              </div>
+              <div class="input-area">
+                <label for="sent-from">From</label>
+                <input type="email" id="sent-from" name="sent-from" placeholder="Enter Email...">
+              </div>
             </div>
           </div>
         </div>
-        <span id="submit-query">Get Results</span>
-      </div>
-
-      <div id="report-results">
-
+        <footer>
+          <a href="https://github.com/nozola/Gmail-Stats" rel="noopener">View on GitHub</a>
+        </footer>
+      </section>
+      <section id="report-content" class="visible-when-authorized group" data-visible="block">
+        <span id="download-csv" class="visible-when-chart" data-visible="inline-flex" onclick="downloadCSV()">Download CSV</span>
         <canvas id="chart-area" class="chart"></canvas>
-
-      </div>
-
+      </section>
     </section>
-    <footer>
-      <a href="https://github.com/nozola/Gmail-Stats" rel="noopener">View on GitHub</a>
-    </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
     <script src="gmail_api.js"></script>
     <script async defer src="https://apis.google.com/js/api.js"
