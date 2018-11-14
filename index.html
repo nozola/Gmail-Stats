@@ -7,12 +7,24 @@
   </head>
   <body>
     <section id="container">
+      <div id="credentials">
+        <div class="input-area">
+          <label for="client-id">Client ID</label><a href="https://developers.google.com/api-client-library/javascript/start/start-js#setup" target="_blank" title="Visit Help Page to get your Client ID" class="help-icon">?</a>
+          <input type="text" id="client-id" name="client-id" placeholder="ie. 12345678901-abcd1ef23gh45i67j890kl12m3nopqrs.apps.googleusercontent.com" title="ie. 12345678901-abcd1ef23gh45i67j890kl12m3nopqrs.apps.googleusercontent.com">
+        </div>
+        <div class="input-area">
+          <label for="api-key">API Key</label><a href="https://developers.google.com/api-client-library/javascript/start/start-js#setup" target="_blank" title="Visit Help Page to get your API Key" class="help-icon">?</a>
+          <input type="text" id="api-key" name="api-key" placeholder="ie. ABcDefgHIjKlmNP0_xA1BcD23EfG4hIJKLM5noP" title="ie. ABcDefgHIjKlmNP0_xA1BcD23EfG4hIJKLM5noP">
+        </div>
+        <span id="submit-credentials" class="submit-button" onclick="getAPICredentials()">Get Results</span>
+        <span id="hide-credentials" onclick="toggleCredentials()">Hide Credentials</span>
+      </div>
       <section id="body-content" class="visible-when-authorized group" data-visible="flex">
         <header>
           <!--Add buttons to initiate auth sequence and sign out-->
           <!-- <button id="authorize_button" style="display: none;">Authorize</button> -->
-          <span id="signout-button">Sign Out</span>
-          <span id="submit-query">Get Results</span>
+          <span id="signout-button" class="submit-button">Sign Out</span>
+          <span id="submit-query" class="submit-button">Get Results</span>
         </header>
 
         <div id="report-blocks">
@@ -62,9 +74,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
     <script src="gmail_api.js"></script>
     <script async defer src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
+      onload="this.onload=function(){}"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
+    <!-- <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script> -->
     <!-- <script src="reporting.js"></script> -->
   </body>
 </html>

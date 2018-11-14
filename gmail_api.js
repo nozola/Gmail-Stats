@@ -1,6 +1,31 @@
-// Client ID and API key from the Developer Console
-let CLIENT_ID = '769177896397-edpv4hv24pa90g30q811vl62h2albhsa.apps.googleusercontent.com';
-let API_KEY = 'AIzaSyDbUIiSuoQ0_xI7ZsF17ZvK2zEQLMD7jaE';
+let CLIENT_ID = '';
+let API_KEY = '';
+function getAPICredentials() {
+  // Client ID and API key from the Developer Console
+  let clientId = document.getElementById("client-id"),
+      apiKey = document.getElementById("api-key");
+  if(clientId != null && apiKey != null && clientId.value != "" && apiKey.value != "") {
+    CLIENT_ID = clientId.value;
+    API_KEY = apiKey.value;
+    handleClientLoad();
+  } else {
+    alert("Woah nelly! You forgot to put in your Client ID and your API Key!");
+  }
+}
+let credentialsShown = true;
+function toggleCredentials() {
+  let credentialsElement = document.getElementById("credentials"),
+      hideCredentialsElement = document.getElementById("hide-credentials");
+  if (credentialsShown) {
+    credentialsShown = false;
+    credentials.style.top = "-"+(credentials.offsetHeight - 12)+"px";
+    hideCredentialsElement.innerHTML = "Show Credentials";
+  } else {
+    credentialsShown = true;
+    credentials.style.top = "0";
+    hideCredentialsElement.innerHTML = "Hide Credentials";
+  }
+}
 
 // Array of API discovery doc URLs for APIs used by the quickstart
 let DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
@@ -41,6 +66,8 @@ let myPieChart = new Chart(ctx,{
     responsive: true
   }
 });
+
+
 /**
  *  On load, called to load the auth2 library and API client library.
  */
@@ -59,6 +86,7 @@ function initClient() {
     discoveryDocs: DISCOVERY_DOCS,
     scope: SCOPES
   }).then(function () {
+    toggleCredentials();
     // Listen for sign-in state changes.
     gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
     if(!gapi.auth2.getAuthInstance().isSignedIn.get()) {
@@ -76,6 +104,8 @@ function initClient() {
       signoutButton.onclick = handleSignoutClick;
       getResultsButton.onclick = handleGetResultsClick;
     }
+  },function() {
+    alert("Error: Your credentials didn't work!");
   });
 }
 
@@ -85,8 +115,6 @@ function initClient() {
  */
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
-    //authorizeButton.style.display = 'none';
-    //signoutButton.style.display = 'block';
     showConditional(visibleWhenAuthorized);
     listLabels();
   } else {

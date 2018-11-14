@@ -21,12 +21,62 @@ html,body,#container {
   display: none;
 }
 
-header { padding: 10px; }
+header { padding: 20px 10px 10px 10px; }
 footer {
   display: flex;
   justify-content: center;
 }
 section { position: relative; }
+
+#credentials {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  padding: 10px 10px 0 10px;
+  background-color: #DDD;
+  border-radius: 0 0 10px 10px;
+  z-index: 999;
+  width: 218px;
+}
+#hide-credentials {
+  width: 100%;
+  min-height: 10px;
+  display: block;
+  margin-top: 10px;
+  font-size: 10px;
+  text-align: center;
+  color: #444;
+}
+#hide-credentials:hover {
+  cursor: pointer;
+  color: #000;
+}
+#credentials .input-area label {
+  display: inline-block;
+  margin-right: 4px;
+}
+#credentials .input-area input {
+  display: block;
+  width: 100%;
+  margin-bottom: 4px;
+  font-size: 10px;
+}
+
+.help-icon {
+  background: #AAA;
+  color: #FFF;
+  height: 15px;
+  width: 15px;
+  line-height: 15px;
+  display: inline-block;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 20px;
+  font-weight: 500;
+  position: relative;
+  top: -2px;
+  text-decoration: none;
+}
 
 .report-block {
   display: inline-block;
@@ -90,7 +140,7 @@ section { position: relative; }
 #sent-to-from .input-area label { width: 35px; }
 
 
-#submit-query, #signout-button {
+.submit-button {
   align-items: center;
   display: inline-flex;
   justify-content: center;
@@ -108,11 +158,17 @@ section { position: relative; }
   border: none;
   border-radius: 4px;
 }
-#submit-query:hover, #signout-button:hover { opacity: 0.8; }
+.submit-button:hover { opacity: 0.8; }
 #submit-query {
   background-color: #1a73e8;
   color: #fff;
   float: right;
+}
+#submit-credentials {
+  background-color: #db4437;
+  color: #fff;
+  width: 100%;
+  margin-top: 10px;
 }
 #signout-button {
   background-color: #777;
@@ -120,7 +176,6 @@ section { position: relative; }
 }
 #container { display: flex; }
 #body-content {
-  display: flex;
   flex-direction: column;
   box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
