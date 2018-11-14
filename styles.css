@@ -49,6 +49,7 @@ section { position: relative; }
   max-height: 70vh;
   overflow-x: scroll;
   overflow-y: auto;
+  height: calc(100% - 41px);
 }
 #labels label {
   -webkit-font-smoothing: auto;
@@ -60,6 +61,9 @@ section { position: relative; }
   height: 18px;
   line-height: 18px;
   padding: 0 4px;
+}
+#label-report-block {
+  height: calc(100% - 200px);
 }
 
 .report-block > div {
