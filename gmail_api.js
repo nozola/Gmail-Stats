@@ -344,15 +344,10 @@ function getMessage(messageId, callback) {
 }
 
 function downloadCSV() {
-  // Example: mailData = { Label_1: 12, Label_2:5, Label_3:9 }
-  // const rows = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
   let csvContent = "data:text/csv;charset=utf-8,";
-  // rows.forEach(function(rowArray){
-  //   let row = rowArray.join(",");
-  //   csvContent += row + "\r\n";
-  // });
+  csvContent += "Label ID,Label Name,Count,\r\n"; // Add header row
   for(key in mailData) {
-    let row = userLabels[key]+","+mailData[key];
+    let row = key+","+userLabels[key]+","+mailData[key];
     csvContent += row + "\r\n";
   }
 
