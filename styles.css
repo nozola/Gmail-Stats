@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 :root {
   font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
   --color-link: #1a73e8;
@@ -33,10 +36,11 @@ section { position: relative; }
   border-radius: 4px;
   float: left;
   margin: 10px;
+  position: relative;
 }
 .report-block > h4 {
   margin: 0;
-  position: relative;
+  position: absolute;
   top: -9px;
   left: 10px;
   padding: 0 4px;
@@ -45,8 +49,6 @@ section { position: relative; }
 }
 
 #labels {
-  max-height: 500px;
-  max-height: 70vh;
   overflow-x: scroll;
   overflow-y: auto;
   height: calc(100% - 41px);
@@ -63,12 +65,21 @@ section { position: relative; }
   padding: 0 4px;
 }
 #label-report-block {
-  height: calc(100% - 200px);
+  max-height: calc(100% - 205px);
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 .report-block > div {
   padding: 0 10px 10px 10px;
 }
+#label-report-block > div {
+  padding-bottom: 0;
+}
+
 #dates .input-area, #sent-to-from .input-area { display: flex; }
 #dates .input-area label, #sent-to-from .input-area label {
   margin-right: 4px;
